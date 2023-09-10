@@ -27,28 +27,28 @@ public class DateValidation {
         }
         // Verificamos que el día esté en el rango válido para el mes
 
-        return !(dia < 1 || dia > daysInMonth(mes, anio));
+        if (dia >= 1 && dia <= daysInMonth(mes, anio)) {
+            return true;
+        } else {
+            return false;
+        }
     }
     
     private static int daysInMonth(int mes, int anio) {
-        switch (mes) {
-            case 2 -> {
-                // Febrero
-                if (anio % 4 == 0 && (anio % 100 != 0 || anio % 400 == 0)) {
-                    // Año bisiesto
-                    return 29;
-                } else {
-                    return 28;
-                }
+        if (mes == 2) {
+            // Febrero
+            if (anio % 4 == 0 && (anio % 100 != 0 || anio % 400 == 0)) {
+                // Año bisiesto
+                return 29;
+            } else {
+                return 28;
             }
-            case 4, 6, 9, 11 -> {
-                // Abril, junio, septiembre, noviembre
-                return 30;
-            }
-            default -> {
-                // Otros meses
-                return 31;
-            }
+        } else if (mes == 4 || mes == 6 || mes == 9 || mes == 11) {
+            // Abril, junio, septiembre, noviembre
+            return 30;
+        } else {
+            // Otros meses
+            return 31;
         }
     }
 }

@@ -32,10 +32,10 @@ public class DateEncryption {
         return Integer.parseInt(eDate, 2);
     }
     
-    private static String StringBinBuilder (String binaryString,int ceros){
+    private static String StringBinBuilder (String binaryString,int bits){
         // Asegura que la cadena tenga exactamente 5 bits rellenando con ceros a la izquierda si es necesario
-        if (binaryString.length() < ceros) {
-            int numZeroesToAdd = ceros - binaryString.length();
+        if (binaryString.length() < bits) {
+            int numZeroesToAdd = bits - binaryString.length();
             StringBuilder zeroes = new StringBuilder();
             for (int i = 0; i < numZeroesToAdd; i++) {
                 zeroes.append('0');
@@ -46,40 +46,14 @@ public class DateEncryption {
     }
     
     public static String decrypt(int eDate){
-        int year = ((eDate & 0xFFFFFE00) >> 9);
-        /*
-                                YYYY   MM    DD
-        ----------------------------+ +++- ----
-        0000 0000 0000 1111 1000 0111 0010 1111
-        1111 1111 1111 1111 1111 1110 0000 0000 AND
-        ---------------------------------------
-        0000 0000 0000 1111 1000 0110 0000 0000
+        String binDate = Integer.toBinaryString(eDate);
+        String binaryDate = StringBinBuilder(binDate,32);
         
-        0000 0000 0000 0000 0000 0111 1100 0011 >> 9
-        int: 1987
-        */
-        int month = (eDate & 0x1E0) >> 5;
-        /*
-                                YYYY   MM    DD
-        ----------------------------+ +++- ----
-        0000 0000 0000 1111 1000 0111 0010 1111
-        0000 0000 0000 0000 0000 0001 1110 0000 AND
-        ---------------------------------------
-        0000 0000 0000 0000 0000 0001 0010 0000
-        
-        0000 0000 0000 0000 0000 0000 0000 1001 >> 5
-        int: 9
-        */
-        int day = (eDate & 0x1F);
-        /*
-                                YYYY   MM    DD
-        ----------------------------+ +++- ----
-        0000 0000 0000 1111 1000 0111 0010 1111
-        0000 0000 0000 0000 0000 0000 0001 1111 AND
-        ---------------------------------------
-        0000 0000 0000 0000 0000 0000 0000 1111
-        int: 15
-         */       
-        return String.format("%02d/%02d/%04d", day, month, year);
+        int day = Integer.parseInt(binaryDate.substring(27, 32), 2);
+        int month = Integer.parseInt(binaryDate.substring(23, 27), 2);
+        int year = Integer.parseInt(binaryDate.substring(0, 23), 2);
+
+        String dateString = String.format("%02d/%02d/%04d", day, month, year);
+        return dateString;
     }
 }
