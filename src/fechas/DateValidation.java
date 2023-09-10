@@ -8,11 +8,11 @@ package fechas;
  *
  * @author Jordy
  */
-public class DateValidate {
-    public static boolean dateIsValid(String fecha) {
+public class DateValidation {
+    public static boolean dateIsValid(String fecha) throws Exception{
         // Verificamos si la fecha tiene el formato correcto
         if (!fecha.matches("\\d{2}/\\d{2}/\\d{4}")) {
-            return false;
+            throw new Exception("La fecha no tiene el formato correcto");
         }
 
         // Parseamos el día, mes y año
@@ -23,7 +23,7 @@ public class DateValidate {
 
         // Verificamos que el mes esté en el rango válido (1-12)
         if (mes < 1 || mes > 12) {
-            return false;
+            throw new Exception("El mes no se encuentra en un rango valido");
         }
         // Verificamos que el día esté en el rango válido para el mes
 
