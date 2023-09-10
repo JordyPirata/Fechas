@@ -14,36 +14,36 @@ public class DateEncryption {
     public static int encrypt(String date) throws Exception{
         if (!DateValidation.dateIsValid(date));
         
-        // String:  15/09/1987
         String[] dateParts = date.split("/");
-        // int:   15 bin: 1111
+        
         int day = Integer.parseInt(dateParts[0]);
-        // int:    9 bin: 1001
         int month = Integer.parseInt(dateParts[1]);
-        // int: 1987 bin: 0111 1100 0011
         int year = Integer.parseInt(dateParts[2]);
         
-        int intDate = 0;
-        /*
-        Date bin:   0000 0000 0000 0000 0000 0000 0000 0000
-              OR    0000 0000 0000 0000 0000 0000 0000 1111 << += 5 bits
-              OR    0000 0000 0000 0000 0000 0001 0010 1111 << += 4 bits
-              OR    0000 0000 0000 1111 1000 0111 0010 1111
-                    ---------------------------------------
-        Date bin:   0000 0000 0000 1111 1000 0111 0010 1111
-        Date int:   1017647
-        */
-        int desplaza = 0;
+        String binday = Integer.toBinaryString(day);
+        String binmonth = Integer.toBinaryString(month);
+        String binyear = Integer.toBinaryString(year);
         
-        intDate |= day;
-        desplaza += 5;
-        intDate |= month << desplaza;
-        desplaza += 4;
-        intDate |= year << desplaza;
-    
-        return intDate;
+        String buildDay = StringBinBuilder(binday,5);
+        String buildMonth = StringBinBuilder(binmonth,4);
+        String buildYear = StringBinBuilder(binyear,23);
+        
+        String eDate = buildYear + buildMonth + buildDay;
+        return Integer.parseInt(eDate, 2);
     }
     
+    private static String StringBinBuilder (String binaryString,int ceros){
+        // Asegura que la cadena tenga exactamente 5 bits rellenando con ceros a la izquierda si es necesario
+        if (binaryString.length() < ceros) {
+            int numZeroesToAdd = ceros - binaryString.length();
+            StringBuilder zeroes = new StringBuilder();
+            for (int i = 0; i < numZeroesToAdd; i++) {
+                zeroes.append('0');
+            }
+            binaryString = zeroes.toString() + binaryString;
+        }
+        return binaryString;
+    }
     
     public static String decrypt(int eDate){
         int year = ((eDate & 0xFFFFFE00) >> 9);
